@@ -20,10 +20,18 @@ def mapfn(k, v):
 			yield line.split(';')[0], 'Vendas' + ':'+ line.split(';')[5]
 		if k == 'C:\\Users\\416459\\exerc2\\join\\2.2-filiais.csv':
 			yield line.split(';')[0], 'Filial' + ':'+ line.split(';')[1]
-				
+
 def reducefn(k, v):
 	print 'reduce ' + k
-	return v
+	total = 0
+	for index, item in enumerate(v):
+		if item.split(":")[0] == 'Vendas':
+			total = int(item.split(":")[1]) +total
+		if item.split(":")[0] == 'Filial':
+			NomeFilial = item.split(":")[1]
+	L = list()
+	L.append(NomeFilial +" , " + str(total))
+	return L
 	
 s = mincemeat.Server()
 
@@ -35,4 +43,5 @@ results = s.run_server(password="changeme")
 
 w = csv.writer(open("C:\\Users\\416459\\exerc2\\RESULT.csv", "w"))
 for k, v in results.items():
-	w.writerow([k, v])
+	w.writerow([k, str(v).replace("[","").replace("]","").replace("'","").replace(' ','')])	
+	
